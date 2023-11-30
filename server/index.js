@@ -3,9 +3,15 @@ const app = express();
 const path = require('path');
 const connectToDatabase = require('./bd');
 const User = require('./models/user');
-const mongoose = require('mongoose'); // Ajout de l'importation de Mongoose
+const apiRoutes = require('./routes/apiRoutes');
 
-const port = 5000;
+// Middleware pour analyser les données JSON du corps de la requête
+app.use(express.json());
+
+// Utilisez vos routes API
+app.use('/api', apiRoutes);
+
+// ... Autres routes et middleware ...
 
 const startServer = async () => {
   try {
@@ -22,13 +28,14 @@ const startServer = async () => {
     const savedUser = await newUser.save();
     console.log('Utilisateur sauvegardé:', savedUser);
 
-    // Configuration de la route pour le fichier index.html
+    // Configuration de la route 
     app.use(express.static(path.join(__dirname, '../client/build')));
     app.get('*', (req, res) => {
       res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
     });
 
-    // Démarrage du serveur
+    const port = 5000;
+    // Demarrage du serveur
     app.listen(port, () => {
       console.log('Serveur express démarré sur le port:', port);
     });
@@ -37,5 +44,4 @@ const startServer = async () => {
   }
 };
 
-// Appel de la fonction pour démarrer le serveur
 startServer();
