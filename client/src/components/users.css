@@ -1,0 +1,28 @@
+.flex-cont-users {
+    margin: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: aliceblue;
+}
+
+.flex-cont-users ul {
+    background-color: aliceblue;
+    border-radius: 15px;
+    padding: 15px;
+    color: black;
+    list-style: none;
+    
+}
+
+
+button {
+    padding: 15px;  
+    border-radius: 15px; 
+}
+
+button:focus {
+    background-color: #063aa9;
+    color: aliceblue;
+}

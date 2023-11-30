@@ -1,34 +1,52 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-localStorage.removeItem('authToken');
+import './users.css';
 const Users = () => {
-  
-const navigate = useNavigate();
-  // Vérifiez si l'utilisateur est authentifié au chargement du composant
+  const [users, setUsers] = useState([]); 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
-      // Redirigez l'utilisateur vers la page de connexion s'il n'est pas authentifié
       navigate('/login');
+    } else {
+      const fetchUsers = async () => {
+        try {
+          const response = await fetch('/api/users');
+          if (response.ok) {
+            const userData = await response.json();
+            setUsers(userData);
+          } else {
+            console.error('Erreur lors de la récupération des utilisateurs:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Erreur lors de la requête:', error);
+        }
+      };
+
+     
+      fetchUsers();
     }
-  }, [navigate]); // Le tableau [navigate] garantit que cet effet se déclenche lorsque navigate change
+  }, [navigate]); 
 
   const handleLogout = () => {
-   
     localStorage.removeItem('authToken');
-    navigate('/login')
-   
+    navigate('/login');
   };
 
   return (
-    <>
-      <p>Les utilisateurs</p>
-      {/* Bouton de déconnexion */}
-      <button onClick={handleLogout}>Déconnexion</button>
-    </>
-  );
 
+    <div className="flex-cont-users">
+      <h1>Liste des utilisateurs :</h1>
+      <ul>
+        {users.map((user) => (
+          <li key={user._id}>{user.email}</li>
+        ))}
+      </ul>
+      <button onClick={handleLogout}>Déconnexion</button>
+      </div>
+   
+  );
 };
 
 export default Users;

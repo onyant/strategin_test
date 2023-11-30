@@ -11,8 +11,7 @@ const UserForm = () => {
     e.preventDefault();
 
     try {
-      // Effectuez la requête POST vers la route serveur
-      const response = await fetch('/api/users', {
+      const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -21,12 +20,10 @@ const UserForm = () => {
       });
 
       if (response.ok) {
-        // L'utilisateur a été ajouté avec succès
         const user = await response.json();
         console.log('Utilisateur ajouté avec succès:', user);
         navigate('/login')
       } else {
-        // Gérez les erreurs
         console.error('Erreur lors de l\'ajout de l\'utilisateur:', response.statusText);
       }
     } catch (error) {
@@ -36,23 +33,25 @@ const UserForm = () => {
 
   return (
     <div className="flex-cont">
-      <h1>Register</h1>
+     
       <form onSubmit={handleFormSubmit}>
-        <input
+      <h1>Register</h1>
+        <p><input
           type="email"
           placeholder="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-        />
+        /></p>
+        <p>
         <input
           type="password"
           placeholder="Password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Ajouter utilisateur</button>
+        /></p>
+        <button type="submit">Ajouter un utilisateur</button>
       </form>
     </div>
   );

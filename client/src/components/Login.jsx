@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import './register.css';
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [logged, setLogged] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate(); 
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      // Effectuez la requête POST vers la route serveur pour la connexion
+     
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
@@ -21,49 +22,51 @@ const LoginForm = () => {
       });
 
       if (response.ok) {
-        // L'utilisateur est connecté avec succès
+        
         const data = await response.json();
-        localStorage.setItem('authToken', data.token); // Stockage local du token
-
-        // Mettez à jour l'état pour indiquer que l'utilisateur est authentifié
-        setLoggedIn(true);
-
-        // Utilisez le hook de navigation pour rediriger l'utilisateur
+        localStorage.setItem('authToken', data.token);      
+        setLogged(true);
         navigate('/users');
       } else {
-        // Gérez les erreurs de connexion
-        console.error('Erreur lors de la connexion de l\'utilisateur:', response.statusText);
+
+        const errorData = await response.json();
+        setError(errorData.message);
+        console.error("Erreur lors de la connexion de l'utilisateur:", response.statusText);
       }
     } catch (error) {
-      console.error('Erreur lors de la requête:', error);
+      console.error("Erreur lors de la requête:", error);
     }
   };
 
-  // Redirigez l'utilisateur si connecté
-  if (loggedIn) {
-    return null; // You can render something else or leave it as null
+ 
+  if (logged) {
+    return null; 
   }
 
   return (
     <div className="flex-cont">
-      <h1>Login</h1>
+      
       <form onSubmit={handleFormSubmit}>
-        <input
+      <h1>Login</h1>
+        <p><input
           type="email"
           placeholder="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-        />
+        /></p>
+        <p>
         <input
           type="password"
           placeholder="Password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-        />
+        /></p>
         <button type="submit">Se connecter</button>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
+     
     </div>
   );
 };
